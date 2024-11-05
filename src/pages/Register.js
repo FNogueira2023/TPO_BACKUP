@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Register.css';
 
-const RegistrationComponent = ({ isOpen, onClose }) => {
+const RegistrationComponent = ({ isOpen, onClose, openLoginModal }) => {
   // State for form inputs
   const [activeForm, setActiveForm] = useState('user');
   const [userData, setUserData] = useState({
@@ -51,6 +51,12 @@ const RegistrationComponent = ({ isOpen, onClose }) => {
       console.log(error);  
     }
   };
+
+  const handleLoginLinkClick = () => {
+    onClose(); // Cierra el modal de registro
+    openLoginModal(); // Abre el modal de login
+  };
+
   return (
     <div className="modal">
       <div className="overlay"></div>
@@ -109,7 +115,7 @@ const RegistrationComponent = ({ isOpen, onClose }) => {
             />
             <button type="submit" className="submitButton">Register</button>
             {message && <p className="message">{message}</p>}
-            <a href="#" className="loginLink">Log in</a>
+            <a onClick={handleLoginLinkClick} href="#" className="loginLink">Log in</a>
           </form>
         </div>
 
@@ -162,7 +168,7 @@ const RegistrationComponent = ({ isOpen, onClose }) => {
             />
             <button type="submit" className="submitButton">Start selling!</button>
             {message && <p className="message">{message}</p>}
-            <a href="#" className="loginLink" style={{ color: '#1c0020', fontWeight: 'bold' }}>Log in</a>
+            <a onClick={handleLoginLinkClick} href="#" className="loginLink" style={{ color: '#1c0020', fontWeight: 'bold' }}>Log in</a>
           </form>
         </div>
       </div>

@@ -18,7 +18,7 @@ const Navbar = ({ openLoginModal, openRegisterModal }) => {
         <ul className="navbar-links">
           <li>
             <Link to="/">
-              <img src={homeIcon} alt="Home" className="icon" />
+              {/* <img src={homeIcon} alt="Home" className="icon" /> */}
               Home
             </Link>
           </li>

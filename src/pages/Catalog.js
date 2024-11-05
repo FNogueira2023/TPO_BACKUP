@@ -104,7 +104,7 @@ const GamesList = () => {
             }
         } catch (error) {
             console.error('Error adding to cart:', error);
-            alert('Failed to add item to cart.');
+            alert('You must be logged in to add items to your cart!');
         }
     };
 
@@ -148,7 +148,6 @@ const GamesList = () => {
 
     // Helper function to check if a game is in cart
     const isGameInCart = (gameId) => {
-        console.log(cart.items);
         if (cart.items.length === 0) return false;
         return cart.items.some(item => item.gameId === gameId);
     };

@@ -1,4 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
+
 
 // Create the context
 const UserContext = createContext();
@@ -11,6 +13,8 @@ export const UserProvider = ({ children }) => {
         return savedUser ? JSON.parse(savedUser) : null;
     });
 
+    const navigate = useNavigate(); 
+
     // Function to update user data and save to localStorage
     const login = (userData) => {
         setUser(userData);
@@ -20,7 +24,8 @@ export const UserProvider = ({ children }) => {
     // Function to clear user data (for logging out)
     const logout = () => {
         setUser(null);
-        localStorage.removeItem('user'); // Remove user data from localStorage
+        localStorage.removeItem('user');
+        navigate('/'); // Remove user data from localStorage
     };
 
     // Ensure that user data in state is updated from localStorage when the component mounts

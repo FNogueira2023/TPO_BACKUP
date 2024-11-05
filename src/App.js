@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate  } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import './App.css';
 import Login from './pages/Login';
@@ -24,22 +24,26 @@ function App() {
         <div className="App">
           <Navbar openLoginModal={loginModal.openModal}
             openRegisterModal={registerModal.openModal}
+            
           />
           <Register
             isOpen={registerModal.isOpen}
             onClose={registerModal.closeModal}
+            openLoginModal={loginModal.openModal}
 
           />
           <Login
             isOpen={loginModal.isOpen}
             onClose={loginModal.closeModal}
+            openRegisterModal={registerModal.openModal}
           />
 
           <Routes>
-            <Route path="/" element={<Homepage />} />
+            <Route path="/" element={<Homepage  openRegisterModal={registerModal.openModal}/>} />
             <Route path="/catalog" element={<Catalog />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/profile" element={<UserProfile />} />
+            <Route path="*" element={<Navigate to="/" />} /> {/* Redirección */}
           </Routes>
 
 

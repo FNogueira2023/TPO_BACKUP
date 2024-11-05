@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import './Hero.css';
 import heroImage from '../../images/hero.png'; 
 
-const Hero = () => {
+const Hero = ({openRegisterModal}) => {
   return (
     <div className="hero">
       <div className="hero-content">
@@ -11,7 +11,7 @@ const Hero = () => {
         <h2>VISIT OUR CATALOG</h2>
         <p>Welcome to our gaming universe! Dive into our vast collection of games, from classic titles to the latest releases. Start your gaming journey with us!</p>
         <div className="hero-buttons">
-          <Link to="/catalog" className="btn btn-primary">Start a Store</Link>
+          <Link to="#" onClick={openRegisterModal} className="btn btn-primary">Start a Store</Link>
           <Link to="/catalog" className="btn btn-secondary">See all games</Link>
         </div>
       </div>

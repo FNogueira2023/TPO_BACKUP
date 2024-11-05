@@ -9,7 +9,8 @@ const PurchaseTotal = ({
   cart,
   cartItems
 }) => {
-  const total = productTotal - discount;
+  // Ensure productTotal and discount are numbers
+  const total = (typeof productTotal === 'number' ? productTotal : 0) - (typeof discount === 'number' ? discount : 0);
 
   return (
     <div className="purchase-total-card">
@@ -18,11 +19,15 @@ const PurchaseTotal = ({
       <div className="details">
         <div className="detail-item">
           <span>Products ({productCount})</span>
-          <span className="amount">${productTotal.toFixed(2)}</span>
+          {productTotal !== undefined && productTotal !== 0 ? (
+            <span className="amount">${productTotal.toFixed(2)}</span>
+          ) : (
+            <span className="amount">No cart items</span>
+          )}
         </div>
         <div className="detail-item">
           <span>Discount</span>
-          <span className="amount">-${discount.toFixed(2)}</span>
+          <span className="amount">-${(typeof discount === 'number' ? discount : 0).toFixed(2)}</span>
         </div>
       </div>
 

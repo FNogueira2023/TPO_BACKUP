@@ -11,10 +11,10 @@ import Testimonials from '../components/homepage/Testimonials';
 import '../components/homepage/SearchBar.css';
 
 
-const Homepage = () => {
+const Homepage = ({openRegisterModal}) => {
   return (
-  <div className='homepage'>
-    <Hero />
+  <div className='homepage'>    
+    <Hero openRegisterModal={openRegisterModal}/>
     {/* <SearchBar /> */}
     <NavigationIcons />
     <Carousel />

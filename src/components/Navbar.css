@@ -1,3 +1,5 @@
+/* Navbar.css */
+
 .navbar {
   position: fixed;
   top: 0;
@@ -38,6 +40,12 @@
   text-decoration: none;
   display: flex;
   align-items: center;
+  transition: color 0.3s ease; /* Transición para el cambio de color */
+}
+
+.navbar-links a:hover {
+  color: #ffa500; /* Color al pasar el cursor */
+  cursor: pointer; /* Cambio de cursor */
 }
 
 .icon {
@@ -49,6 +57,12 @@
 .navbar-cart a {
   color: white;
   text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.navbar-cart a:hover {
+  color: #ffa500;
+  cursor: pointer;
 }
 
 .navbar-auth {
@@ -63,11 +77,13 @@
   margin: 0 15px;
 }
 
-.register-btn, .login-btn {
+.register-btn,
+.login-btn {
   padding: 0.5rem 1rem;
   margin-left: 1rem;
   border-radius: 4px;
   text-decoration: none;
+  transition: background-color 0.3s ease, color 0.3s ease; /* Transición para color y fondo */
 }
 
 .register-btn {
@@ -75,21 +91,34 @@
   color: #4a0e4e;
 }
 
+.register-btn:hover {
+  background-color: #ff7f00; /* Color de fondo al pasar el cursor */
+  color: white;
+  cursor: pointer;
+}
+
 .login-btn {
   border: 1px solid white;
   color: white;
 }
 
-/* Navbar.css */
+.login-btn:hover {
+  background-color: white;
+  color: #4a0e4e; /* Color al pasar el cursor */
+  cursor: pointer;
+}
+
 .logout-btn {
   background: none;
   border: none;
   color: white;
   font-size: 16px;
   cursor: pointer;
+  transition: color 0.3s ease;
 }
 
 .logout-btn:hover {
+  color: #ffa500; /* Color al pasar el cursor */
   text-decoration: underline;
 }
 
@@ -105,6 +134,3 @@
   margin-left: 10px;
   margin-right: 10px;
 }
-
-
-

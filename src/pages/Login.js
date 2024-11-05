@@ -3,7 +3,7 @@ import './Login.css';
 import LoginImage from '../images/LoginImage.png';
 import { useUser } from '../userContext';
 
-const LoginComponent = ({ isOpen, onClose }) => {
+const LoginComponent = ({ isOpen, onClose,openRegisterModal }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -16,7 +16,7 @@ const LoginComponent = ({ isOpen, onClose }) => {
 
         const loginData = {
             email,
-            password          
+            password
         };
 
 
@@ -45,6 +45,11 @@ const LoginComponent = ({ isOpen, onClose }) => {
             setErrorMessage(error.message);
         }
     };
+
+    const handleRegisterClick = () => {
+        onClose(); // Cierra el modal de registro
+        openRegisterModal(); // Abre el modal de login
+      };
 
     return (
         <div className='modal'>
@@ -88,7 +93,7 @@ const LoginComponent = ({ isOpen, onClose }) => {
                     <div className="footer">
                         <a href="/forgot-password" className="link">Forgot Password</a>
                         <span className="divider"> | </span>
-                        <a href="/sign-up" className="link">Sign Up</a>
+                        <a onClick={handleRegisterClick} href="#" className="link">Sign Up</a>
                     </div>
                 </div>
             </div>
