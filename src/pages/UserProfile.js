@@ -12,7 +12,7 @@ const UserProfile = () => {
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [cart, setCart] = useState({ items: [], totalPrice: 0 });
+    const [cart, setCart] = useState([]);
     const [profile, setProfile] = useState([]);
     const [ordersGames, setOrdersGames] = useState([]);
     const [companyGames, setCompanyGames] = useState([]);
@@ -150,8 +150,7 @@ const UserProfile = () => {
 
     useEffect(() => {
         fetchCart();
-        fetchCartItems();        
-        // localStorage.setItem('cart', JSON.stringify(cart));
+        fetchCartItems();      
     }, [user]);
 
     const addToCart = async (game) => {

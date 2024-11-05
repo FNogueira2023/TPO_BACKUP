@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Cart.css';
 import PurchaseTotal from '../components/PurchaseTotal';
-import { useFetch } from '../useFetch';
 import Game from '../components/Game';
 import { useUser } from '../userContext';
 import axios from 'axios';
@@ -12,92 +11,100 @@ const Cart = () => {
     const [games, setGames] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [wishlist, setWishlist] = useState([]);
     const [wishlistItems, setWishlistItems] = useState([]);
     const [cartItems, setCartItems] = useState([]);
-
-
     const [cart, setCart] = useState([]);
 
-
-    const fetchData = async () => {
-        setCart([]);
-        if (!user) {
-            setCart([]); // Reset the cart to empty
-            localStorage.removeItem('cart');
-            setLoading(false);
-            return;
-        }
-
+    // Function to fetch games
+    const fetchGames = async () => {
         setLoading(true);
         try {
-            const userId = user.user.id;
-            const token = user.token;
-
-            // Fetch cart data
-            const cartResponse = await axios.post(`http://127.0.0.1:3001/carts`, { userId }, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setCart(cartResponse.data);
-
             // Fetch game details
             const gamesResponse = await axios.get('http://127.0.0.1:3001/games/');
             setGames(gamesResponse.data);
 
+        } catch (err) {
+            setError('Error fetching data. Please try again later.'); // Set error message
+            console.error(err); // Log the error for debugging
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchCart = async () => {
+        setLoading(true);
+        const token = user.token;
+
+        try {
+            // Fetch cart data
+            const cartResponse = await axios.post('http://127.0.0.1:3001/carts', { userId: user.user.id }, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setCart(cartResponse.data);
+
             // Fetch cart items
-            const cartItemsResponse = await fetch('http://127.0.0.1:3001/carts/items', {
-                method: 'GET',
+            const cartItemsResponse = await axios.get('http://127.0.0.1:3001/carts/items', {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
             });
-
-            // Check if the response is ok before processing
-            if (!cartItemsResponse.ok) {
-                throw new Error('Failed to fetch cart items');
-            }
-
-            // Parse the response to JSON
-            const cartItemsData = await cartItemsResponse.json();
-            setCartItems(cartItemsData);
+            setCartItems(cartItemsResponse.data);
 
         } catch (err) {
-            setError('Error fetching data');
-            console.error(err);
+            setError('Error fetching data. Please try again later.'); // Set error message
+            console.error(err); // Log the error for debugging
         } finally {
             setLoading(false);
         }
     };
 
     // Function to fetch wishlist items 
-    const wishlistResponse = async () => {
+    const fetchWishlistItems = async () => {
         setWishlistItems([])
-        if (!user) {
-            setWishlistItems([]);
-            setLoading(false);
-            return;
-        }
         try {
-           const response = await axios.get(`http://127.0.0.1:3001/wishlists/items/all`, {
+            const response = await axios.get(`http://127.0.0.1:3001/wishlists/items/all`, {
                 headers: { Authorization: `Bearer ${user.token}` },
             });
             setWishlistItems(response.data);
         } catch (error) {
-            console.error("Error fetching wishlist items:", error);          
-        }        
+            console.error("Error fetching wishlist items:", error);
+        }
     }
 
-    // Fetch data on component mount
-    useEffect(() => {
-        fetchData();
-        localStorage.setItem('cart', JSON.stringify(cart));
-    }, [user]);
+    // Function to fetch cart items
+    const fetchCartItems = async () => {
+        setLoading(true);
+        const token = user.token;
 
-    // Ensure wishlistResponse fetches the latest items when `wishlistItems` changes
+        try {
+            // Fetch cart items
+            const cartItemsResponse = await axios.get('http://127.0.0.1:3001/carts/items', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            setCartItems(cartItemsResponse.data);
+        } catch (err) {
+            setError('Error fetching data. Please try again later.'); // Set error message
+            console.error(err); // Log the error for debugging
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
     useEffect(() => {
-        wishlistResponse();        
-    }, [user]);
+        fetchGames();
+        if (user) {
+            fetchCartItems();
+            fetchCart();
+            fetchWishlistItems();
+        }
+    }, []);
+
+
 
     // Function to create a new order
     const createOrder = async () => {
@@ -140,13 +147,8 @@ const Cart = () => {
             });
 
             if (response.ok) {
-                // Update the cart state to remove the game
-                setCart((prevCart) => prevCart.filter(item => item.gameId !== game.id));
-
-                // Also remove the game from the games state
-                setGames((prevGames) => prevGames.filter(g => g.id !== game.id));
-
                 alert(`${game.name} has been removed from your cart.`);
+                await fetchCart();
             } else {
                 const errorData = await response.json();
                 alert(`Error removing from cart: ${errorData.error}`);
@@ -170,8 +172,7 @@ const Cart = () => {
 
             if (response.status === 201) {
                 alert(`${game.name} has been added to your wishlist.`);
-                // Update wishlistItems state
-                setWishlistItems(prevItems => [...prevItems, game.id]);
+                await fetchWishlistItems();
             }
         } catch (error) {
             console.log(game.id);
@@ -193,8 +194,7 @@ const Cart = () => {
 
             if (response.status === 204) {
                 alert(`${game.name} has been removed from your wishlist.`);
-                // Update wishlistItems state
-                setWishlistItems(prevItems => prevItems.filter(id => id !== game.id));
+                await fetchWishlistItems();
             }
         } catch (error) {
             console.error('Error removing from wishlist:', error);

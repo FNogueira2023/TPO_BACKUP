@@ -152,7 +152,7 @@ const GamesList = () => {
 
             if (response.ok) {
                 fetchCartItems();
-                fetchCart();
+                await fetchCart();
                 alert(`${game.name} has been added to your cart!`);
             } else {
                 const errorData = await response.json();
@@ -179,7 +179,7 @@ const GamesList = () => {
 
             if (response.ok) {
                 fetchCartItems();
-                fetchCart();
+                await fetchCart();
                 alert(`${game.name} has been removed from your cart.`);
             } else {
                 const errorData = await response.json();
