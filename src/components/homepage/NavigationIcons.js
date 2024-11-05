@@ -15,8 +15,8 @@ const NavigationIcons = () => {
   const icons = [
     { name: 'Home', path: '/', icon: homeIcon },
     { name: 'Catalog', path: '/catalog', icon: catalogIcon },
-    { name: 'Purchases', path: '/purchases', icon: purchasesIcon },
-    { name: 'Wishlist', path: '/wishlist', icon: wishlistIcon },
+    { name: 'Purchases', path: '/profile', icon: purchasesIcon },
+    { name: 'Wishlist', path: '/profile', icon: wishlistIcon },
     { name: 'Cart', path: '/cart', icon: cartIcon },
   ];
 

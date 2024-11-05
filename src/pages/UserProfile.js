@@ -151,7 +151,7 @@ const UserProfile = () => {
     useEffect(() => {
         fetchCart();
         fetchCartItems();      
-    }, [user]);
+    }, []);
 
     const addToCart = async (game) => {
         try {
@@ -168,17 +168,8 @@ const UserProfile = () => {
             });
 
             if (response.ok) {
-                const cartItem = await response.json();
-                setCart((prevCart) => {
-                    const updatedItems = [...prevCart.items, cartItem];
-                    const updatedTotalPrice = updatedItems.reduce((total, item) => total + item.price * item.quantity, 0);
-
-                    return {
-                        ...prevCart,
-                        items: updatedItems,
-                        totalPrice: updatedTotalPrice,
-                    };
-                });
+                fetchCartItems();
+                await fetchCart();
                 alert(`${game.name} has been added to your cart!`);
             } else {
                 const errorData = await response.json();
@@ -186,7 +177,7 @@ const UserProfile = () => {
             }
         } catch (error) {
             console.error('Error adding to cart:', error);
-            alert('Failed to add item to cart.');
+            alert('You must be logged in to add items to your cart!');
         }
     };
 
@@ -204,16 +195,8 @@ const UserProfile = () => {
             });
 
             if (response.ok) {
-                setCart((prevCart) => {
-                    const updatedItems = prevCart.items.filter(item => item.gameId !== game.id);
-                    const updatedTotalPrice = updatedItems.reduce((total, item) => total + item.price * item.quantity, 0);
-
-                    return {
-                        ...prevCart,
-                        items: updatedItems,
-                        totalPrice: updatedTotalPrice,
-                    };
-                });
+                fetchCartItems();
+                await fetchCart();
                 alert(`${game.name} has been removed from your cart.`);
             } else {
                 const errorData = await response.json();
@@ -224,6 +207,7 @@ const UserProfile = () => {
             alert('Failed to remove item from cart.');
         }
     };
+
 
 
     const isGameInCart = (gameId) => {

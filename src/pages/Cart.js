@@ -4,6 +4,7 @@ import PurchaseTotal from '../components/PurchaseTotal';
 import Game from '../components/Game';
 import { useUser } from '../userContext';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 const Cart = () => {
@@ -14,6 +15,8 @@ const Cart = () => {
     const [wishlistItems, setWishlistItems] = useState([]);
     const [cartItems, setCartItems] = useState([]);
     const [cart, setCart] = useState([]);
+   
+    const navigate = useNavigate();
 
     // Function to fetch games
     const fetchGames = async () => {
@@ -110,26 +113,32 @@ const Cart = () => {
     const createOrder = async () => {
         if (!user) return;
 
+        if (cartItems.length === 0) {
+            alert('Your cart is empty!');
+        }
+
         try {
             const token = user.token;
             const totalPrice = cart.totalPrice;
             const orderData = {
-                games: cart.map(item => ({ gameId: item.gameId, quantity: item.quantity })),
-                totalPrice,
+                games: cartItems.map(item => ({ gameId: item.gameId, quantity: item.quantity })),
+                totalPrice,                
+                
             };
-
+            
             const response = await axios.post('http://127.0.0.1:3001/orders', orderData, {
-                headers: { Authorization: `Bearer ${token}` },
+                headers: { Authorization: `Bearer ${token}` }
             });
 
-            if (response.status === 201) {
-                alert('Order placed successfully!');
+            if (response.status === 201) {                
                 setCart([]);
-                localStorage.removeItem('cart');
+                setCartItems([]);
+
+                alert('Order placed successfully! Thank you for shopping with us!');
+                navigate('/');
             }
         } catch (error) {
-            console.error('Error creating order:', error);
-            setError('Failed to create order.');
+            console.error('Error creating order:', error);           
         }
     };
 
@@ -171,7 +180,6 @@ const Cart = () => {
             });
 
             if (response.status === 201) {
-                alert(`${game.name} has been added to your wishlist.`);
                 await fetchWishlistItems();
             }
         } catch (error) {
@@ -193,7 +201,6 @@ const Cart = () => {
             });
 
             if (response.status === 204) {
-                alert(`${game.name} has been removed from your wishlist.`);
                 await fetchWishlistItems();
             }
         } catch (error) {
