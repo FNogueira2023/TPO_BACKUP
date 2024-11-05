@@ -23,7 +23,7 @@ const Cart = () => {
     const fetchData = async () => {
         setCart([]);
         if (!user) {
-            setCart({ items: [], totalPrice: 0 }); // Reset the cart to empty
+            setCart([]); // Reset the cart to empty
             localStorage.removeItem('cart');
             setLoading(false);
             return;
@@ -43,8 +43,6 @@ const Cart = () => {
             // Fetch game details
             const gamesResponse = await axios.get('http://127.0.0.1:3001/games/');
             setGames(gamesResponse.data);
-
-
 
             // Fetch cart items
             const cartItemsResponse = await fetch('http://127.0.0.1:3001/carts/items', {
@@ -93,12 +91,12 @@ const Cart = () => {
     // Fetch data on component mount
     useEffect(() => {
         fetchData();
+        localStorage.setItem('cart', JSON.stringify(cart));
     }, [user]);
 
     // Ensure wishlistResponse fetches the latest items when `wishlistItems` changes
     useEffect(() => {
-        wishlistResponse();
-        localStorage.setItem('cart', JSON.stringify(cart));
+        wishlistResponse();        
     }, [user]);
 
     // Function to create a new order
@@ -203,7 +201,6 @@ const Cart = () => {
             setError('Failed to remove item from wishlist.');
         }
     };
-
 
     // Helper function to check if a game is in cart
     const isGameInCart = (gameId) => {

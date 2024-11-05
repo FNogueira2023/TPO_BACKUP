@@ -1,8 +1,29 @@
 // Homepage.js
 import React from 'react';
+import Hero from '../components/homepage/Hero';
+import Carousel from '../components/homepage/Carousel';
+import Highlights from '../components/homepage/Highlights';
+import IconsNavbar from '../components/homepage/IconsNavbar';
+import ImagesPlaceholder from '../components/homepage/ImagesPlaceholder';
+import NavigationIcons from '../components/homepage/NavigationIcons';
+import SearchBar from '../components/homepage/SearchBar';
+import Testimonials from '../components/homepage/Testimonials';
+import '../components/homepage/SearchBar.css';
+
 
 const Homepage = () => {
-  return <h1>Welcome to the Homepage</h1>;
+  return (
+  <div className='homepage'>
+    <Hero />
+    {/* <SearchBar /> */}
+    <NavigationIcons />
+    <Carousel />
+    <Highlights />
+    <ImagesPlaceholder />
+    <Testimonials />
+  </div>
+
+  );
 };
 
 export default Homepage;
