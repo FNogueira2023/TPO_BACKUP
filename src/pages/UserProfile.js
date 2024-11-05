@@ -17,13 +17,8 @@ const UserProfile = () => {
     const [ordersGames, setOrdersGames] = useState([]);
     const [companyGames, setCompanyGames] = useState([]);
 
-    const fetchData = async () => {
-        if (!user) {
-            localStorage.removeItem('cart');
-            setLoading(false);
-            return;
-        }
-
+    // Function to fetch profile data
+    const fetchProfile = async () => {
         setLoading(true);
         const token = user.token;
 
@@ -34,16 +29,24 @@ const UserProfile = () => {
             });
             setProfile(userResponse.data);
 
+        } catch (err) {
+            setError('Error fetching data. Please try again later.'); // Set error message
+            console.error(err); // Log the error for debugging
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchCart = async () => {
+        setLoading(true);
+        const token = user.token;
+
+        try {
             // Fetch cart data
             const cartResponse = await axios.post('http://127.0.0.1:3001/carts', { userId: user.user.id }, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setCart(cartResponse.data);
-
-            // Fetch game details
-            const gamesResponse = await axios.get('http://127.0.0.1:3001/games/');
-            setGames(gamesResponse.data);
-
 
             // Fetch cart items
             const cartItemsResponse = await axios.get('http://127.0.0.1:3001/carts/items', {
@@ -54,6 +57,68 @@ const UserProfile = () => {
             });
             setCartItems(cartItemsResponse.data);
 
+        } catch (err) {
+            setError('Error fetching data. Please try again later.'); // Set error message
+            console.error(err); // Log the error for debugging
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Function to fetch wishlist items 
+    const fetchWishlistItems = async () => {
+        setWishlistItems([])
+        try {
+            const response = await axios.get(`http://127.0.0.1:3001/wishlists/items/all`, {
+                headers: { Authorization: `Bearer ${user.token}` },
+            });
+            setWishlistItems(response.data);
+        } catch (error) {
+            console.error("Error fetching wishlist items:", error);
+        }
+    }
+    // Function to fetch games
+    const fetchGames = async () => {
+        setLoading(true);
+        try {
+            // Fetch game details
+            const gamesResponse = await axios.get('http://127.0.0.1:3001/games/');
+            setGames(gamesResponse.data);
+
+        } catch (err) {
+            setError('Error fetching data. Please try again later.'); // Set error message
+            console.error(err); // Log the error for debugging
+        } finally {
+            setLoading(false);
+        }
+    };
+    // Function to fetch cart items
+    const fetchCartItems = async () => {
+        setLoading(true);
+        const token = user.token;
+
+        try {
+            // Fetch cart items
+            const cartItemsResponse = await axios.get('http://127.0.0.1:3001/carts/items', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            setCartItems(cartItemsResponse.data);
+        } catch (err) {
+            setError('Error fetching data. Please try again later.'); // Set error message
+            console.error(err); // Log the error for debugging
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchOrdersAndCompanyGames = async () => {
+        setLoading(true);
+        const token = user.token;
+
+        try {            
             // Fetch user orders or company games based on user type
             if (user.user.userType === 'customer') {
                 const ordersResponse = await axios.get('http://127.0.0.1:3001/orders', {
@@ -68,46 +133,26 @@ const UserProfile = () => {
             }
 
         } catch (err) {
-            setError('Error fetching data. Please try again later.'); // Set error message
-            console.error(err); // Log the error for debugging
+            // setError('Error fetching data. Please try again later.'); // Set error message
+            // console.error(err); // Log the error for debugging
         } finally {
             setLoading(false);
         }
     };
 
-    // Function to fetch wishlist items 
-    const wishlistResponse = async () => {
-        setWishlistItems([])
-        if (!user) {
-            setWishlistItems([]);
-            setLoading(false);
-            return;
-        }
-        try {
-            const response = await axios.get(`http://127.0.0.1:3001/wishlists/items/all`, {
-                headers: { Authorization: `Bearer ${user.token}` },
-            });
-            setWishlistItems(response.data);
-        } catch (error) {
-            console.error("Error fetching wishlist items:", error);
-        }
-    }
-
 
     useEffect(() => {
-        fetchData();
+        fetchGames();
+        fetchProfile();
+        fetchWishlistItems();   
+        fetchOrdersAndCompanyGames();
+    }, []);
+
+    useEffect(() => {
+        fetchCart();
+        fetchCartItems();        
+        // localStorage.setItem('cart', JSON.stringify(cart));
     }, [user]);
-
-    // Ensure wishlistResponse fetches the latest items when `wishlistItems` changes
-    useEffect(() => {
-        wishlistResponse();
-        localStorage.setItem('cart', JSON.stringify(cart));
-    }, [user]);
-
-    useEffect(() => {
-        localStorage.setItem('cart', JSON.stringify(cart));
-        localStorage.setItem('wishlistItems', JSON.stringify(wishlistItems));
-    }, [cart, wishlistItems]);
 
     const addToCart = async (game) => {
         try {

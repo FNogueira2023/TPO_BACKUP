@@ -13,7 +13,7 @@ export const UserProvider = ({ children }) => {
         return savedUser ? JSON.parse(savedUser) : null;
     });
 
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     // Function to update user data and save to localStorage
     const login = (userData) => {

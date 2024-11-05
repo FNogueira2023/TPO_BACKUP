@@ -24,3 +24,12 @@
     gap: 24px;
     margin: 3rem;
   }
+
+  .highlights__phrase {
+    font-size: 20px;
+    font-weight: lighter;
+    margin-bottom: 8px;
+    text-align: center;
+    grid-column: 2/5;
+  
+  }
