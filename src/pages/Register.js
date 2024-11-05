@@ -12,7 +12,7 @@ const RegistrationComponent = ({ isOpen, onClose, openLoginModal }) => {
     password: '',
     userType: '',
   });
-  
+
   // State for error or success messages
   const [message, setMessage] = useState(null);
 
@@ -30,6 +30,12 @@ const RegistrationComponent = ({ isOpen, onClose, openLoginModal }) => {
   const handleUserSubmit = async (e) => {
     e.preventDefault();
 
+    if (!userData.password) {
+      setMessage('Password is required.');
+      return;
+    }
+
+    // Proceed with fetch request if password is not empty
     try {
       const response = await fetch('http://127.0.0.1:3001/users/signup', {
         method: 'POST',
@@ -42,15 +48,23 @@ const RegistrationComponent = ({ isOpen, onClose, openLoginModal }) => {
       const result = await response.json();
       if (response.ok) {
         setMessage('User registration successful!');
-        setUserData({ name: '', lastName: '', birthDate: '', email: '', password: '' }); // Reset form
+        setUserData({
+          name: '',
+          lastName: '',
+          birthDate: '',
+          email: '',
+          password: '',
+          userType: userData.userType,
+        }); // Reset form, keeping the userType
       } else {
         setMessage(result.error || 'User registration failed');
       }
     } catch (error) {
       setMessage('Error occurred during user registration');
-      console.log(error);  
+      console.log(error);
     }
   };
+
 
   const handleLoginLinkClick = () => {
     onClose(); // Cierra el modal de registro
@@ -67,8 +81,8 @@ const RegistrationComponent = ({ isOpen, onClose, openLoginModal }) => {
             setActiveForm('user');
             setUserData((userData) => ({
               ...userData,
-              userType: 'customer' 
-            }));             
+              userType: 'customer'
+            }));
           }}
         >
           <h2 className="formTitle">User Sign Up</h2>
@@ -126,8 +140,8 @@ const RegistrationComponent = ({ isOpen, onClose, openLoginModal }) => {
             setActiveForm('store');
             setUserData((userData) => ({
               ...userData,
-              userType: 'company' 
-            }));             
+              userType: 'company'
+            }));
           }}
         >
           <button className="close-btn" onClick={onClose}>×</button>
@@ -149,7 +163,7 @@ const RegistrationComponent = ({ isOpen, onClose, openLoginModal }) => {
               value={userData.name}
               onChange={handleUserInputChange}
               required
-            />            
+            />
             <input
               type="email"
               name="email"

@@ -20,11 +20,9 @@ function App() {
   return (
     <Router>
       <UserProvider>
-
         <div className="App">
           <Navbar openLoginModal={loginModal.openModal}
-            openRegisterModal={registerModal.openModal}
-            
+            openRegisterModal={registerModal.openModal}            
           />
           <Register
             isOpen={registerModal.isOpen}
@@ -45,10 +43,7 @@ function App() {
             <Route path="/profile" element={<UserProfile />} />
             <Route path="*" element={<Navigate to="/" />} /> {/* Redirección */}
           </Routes>
-
-
         </div>
-
         <Footer />
       </UserProvider>
     </Router>
