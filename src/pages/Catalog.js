@@ -114,7 +114,7 @@ const GamesList = () => {
     useEffect(() => {
         fetchCartItems();
         fetchCart();
-    }, [cart]);
+    }, []);
 
     useEffect(() => {
         const filtered = games.filter(game => {
@@ -151,17 +151,8 @@ const GamesList = () => {
             });
 
             if (response.ok) {
-                const cartItem = await response.json();
-                setCart((prevCart) => {
-                    const updatedItems = [...prevCart.items, cartItem];
-                    const updatedTotalPrice = updatedItems.reduce((total, item) => total + item.price * item.quantity, 0);
-
-                    return {
-                        ...prevCart,
-                        items: updatedItems,
-                        totalPrice: updatedTotalPrice,
-                    };
-                });
+                fetchCartItems();
+                fetchCart();
                 alert(`${game.name} has been added to your cart!`);
             } else {
                 const errorData = await response.json();
@@ -187,16 +178,8 @@ const GamesList = () => {
             });
 
             if (response.ok) {
-                setCart((prevCart) => {
-                    const updatedItems = prevCart.items.filter(item => item.gameId !== game.id);
-                    const updatedTotalPrice = updatedItems.reduce((total, item) => total + item.price * item.quantity, 0);
-
-                    return {
-                        ...prevCart,
-                        items: updatedItems,
-                        totalPrice: updatedTotalPrice,
-                    };
-                });
+                fetchCartItems();
+                fetchCart();
                 alert(`${game.name} has been removed from your cart.`);
             } else {
                 const errorData = await response.json();
@@ -214,7 +197,7 @@ const GamesList = () => {
     // Helper function to check if a game is in cart
     const isGameInCart = (gameId) => {
         if (cartItems == 0) return false;
-        return cart.items.some(item => item.gameId === gameId);
+        return cartItems.some(item => item.gameId === gameId);
     };
 
     return (
