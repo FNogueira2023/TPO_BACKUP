@@ -3,18 +3,80 @@ import FilterMenu from '../components/FilterMenu';
 import Game from '../components/Game';
 import GameSearch from '../components/GameSearch';
 import { useFetch } from '../useFetch';
-import Navbar from '../components/Navbar';
 import './Catalog.css';
 import { useUser } from '../userContext';
+import axios from 'axios';
 
 const GamesList = () => {
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const { user } = useUser();
     const [games, setGames] = useState([]);
     const [filteredGames, setFilteredGames] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const [cart, setCart] = useState({ items: [], totalPrice: 0 });
+    const [cart, setCart] = useState([]);
+    const [cartItems, setCartItems] = useState([]);
 
-    const { data, loading, error } = useFetch('http://127.0.0.1:3001/games/');
+
+    const { data } = useFetch('http://127.0.0.1:3001/games/');
+
+    const fetchCart = async () => {
+        if (!user) {
+            return;
+        }
+
+        setLoading(true);
+        const token = user.token;
+
+        try {
+            // Fetch cart data
+            const cartResponse = await axios.post('http://127.0.0.1:3001/carts', { userId: user.user.id }, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setCart(cartResponse.data);
+
+            // Fetch cart items
+            const cartItemsResponse = await axios.get('http://127.0.0.1:3001/carts/items', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            setCartItems(cartItemsResponse.data);
+
+        } catch (err) {
+            setError('Error fetching data. Please try again later.'); // Set error message
+            console.error(err); // Log the error for debugging
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Function to fetch cart items
+    const fetchCartItems = async () => {
+        if (!user) {
+            return;
+        }
+
+        setLoading(true);
+        const token = user.token;
+
+        try {
+            // Fetch cart items
+            const cartItemsResponse = await axios.get('http://127.0.0.1:3001/carts/items', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+            setCartItems(cartItemsResponse.data);
+        } catch (err) {
+            setError('Error fetching data. Please try again later.'); // Set error message
+            console.error(err); // Log the error for debugging
+        } finally {
+            setLoading(false);
+        }
+    };
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
@@ -50,6 +112,11 @@ const GamesList = () => {
     }, [data]);
 
     useEffect(() => {
+        fetchCartItems();
+        fetchCart();
+    }, [cart]);
+
+    useEffect(() => {
         const filtered = games.filter(game => {
             return (
                 (!searchQuery || game.name.toLowerCase().includes(searchQuery.toLowerCase())) &&
@@ -66,9 +133,7 @@ const GamesList = () => {
     }, [games, genre, os, language, priceFrom, priceTo, playerMode, rating, searchQuery]);
 
 
-    useEffect(() => {
-        localStorage.setItem('cart', JSON.stringify(cart));
-    }, [cart]);
+
 
 
     const addToCart = async (game) => {
@@ -148,13 +213,9 @@ const GamesList = () => {
 
     // Helper function to check if a game is in cart
     const isGameInCart = (gameId) => {
-        if (cart.items.length === 0) return false;
+        if (cartItems == 0) return false;
         return cart.items.some(item => item.gameId === gameId);
     };
-
-
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error.message}</p>;
 
     return (
         <div className='catalog-body'>
@@ -195,7 +256,8 @@ const GamesList = () => {
                                     variant="catalog"
                                     onAddToCart={addToCart}
                                     onRemoveFromCart={removeFromCart}
-                                    isInCart={isGameInCart(game.id)} />
+                                    isInCart={isGameInCart(game.id)}
+                                />
                             </div>
                         ))}
                     </div>
