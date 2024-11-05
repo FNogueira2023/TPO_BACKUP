@@ -7,17 +7,26 @@ import catalogIcon from '../../images/icons/catalog.png';
 import purchasesIcon from '../../images/icons/shopping-bag.png';
 import wishlistIcon from '../../images/icons/wishlist.png';
 import cartIcon from '../../images/icons/shopping-cart.png';
+import { useUser } from '../../userContext';
 
 const NavigationIcons = () => {
   const location = useLocation();
   const [hoveredIcon, setHoveredIcon] = useState(null);
+  const { user } = useUser();
 
   const icons = [
     { name: 'Home', path: '/', icon: homeIcon },
     { name: 'Catalog', path: '/catalog', icon: catalogIcon },
-    { name: 'Purchases', path: '/profile', icon: purchasesIcon },
-    { name: 'Wishlist', path: '/profile', icon: wishlistIcon },
-    { name: 'Cart', path: '/cart', icon: cartIcon },
+
+    , ...(user?.user.userType === 'company' ? [
+      { name: 'My sales', path: '/profile', icon: purchasesIcon },      
+    ] : []), 
+
+    ...(user?.user.userType !== 'company' ? [
+      { name: 'Wishlist', path: '/profile', icon: wishlistIcon },
+      { name: 'Cart', path: '/cart', icon: cartIcon },
+      { name: 'Purchases', path: '/profile', icon: purchasesIcon },
+    ] : []),
   ];
 
   return (

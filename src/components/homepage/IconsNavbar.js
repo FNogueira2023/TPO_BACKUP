@@ -1,8 +1,10 @@
 import React from 'react';
 import { FaHome, FaFileAlt, FaShoppingBag, FaHeart, FaShoppingCart } from "react-icons/fa";
 import './IconsNavbar.css';  // Ensure you create this file for styling
+import { useUser } from '../../userContext'; // Import User context
 
 const NavBar = () => {
+  const { user, logout } = useUser();
   return (
     <nav className="iconsnavbar">
       <div className="nav-item">

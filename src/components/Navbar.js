@@ -30,7 +30,7 @@ const Navbar = ({ openLoginModal, openRegisterModal }) => {
         </ul>
         <div className="navbar-cart">
           <Link to="/cart">
-            <img src={cartIcon} alt="Cart" className="icon" />
+            {user?.user.userType === 'customer' &&<img src={cartIcon} alt="Cart" className="icon" />}
           </Link>
         </div>
         {/* Check if the user is logged in */}
