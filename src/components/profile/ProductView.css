@@ -24,3 +24,27 @@
     gap: 24px;
     margin: 3rem;
   }
+
+
+  .product-view {
+    position: relative;
+  }
+  
+  .add-product-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 10px 15px;
+    font-size: 16px;
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;  
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  .add-product-btn:hover {
+    background-color: #0056b3;
+  }
+  
