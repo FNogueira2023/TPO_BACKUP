@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import './createGameForm.css';
 
-const CreateGameForm = () => {
+
+const CreateGameForm = ({onClose}) => {
     const [gameData, setGameData] = useState({
         name: '',
         category: '',
@@ -42,7 +43,8 @@ const CreateGameForm = () => {
             <div className="overlay"></div>
             <div className="create-game-form-container">
                 <div className="create-game-form">
-                    <h2>Product Details</h2>
+                <button className="close-btn" onClick={onClose}>X</button>
+                    <h2>Product Details</h2>                    
                     <div className="form-section">
                         <div>
                             <input
@@ -123,6 +125,7 @@ const CreateGameForm = () => {
                         <button onClick={handleSaveAndPublish} className="save-publish-btn">
                            Publish
                         </button>
+                       
                         
                     </div>
                 </div>

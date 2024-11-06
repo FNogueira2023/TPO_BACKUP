@@ -85,8 +85,8 @@
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    margin-bottom: 40px; /* Separación del contenido superior */
-    margin-right: 50px;
+    /* margin-bottom: 40px; Separación del contenido superior */
+    margin: auto;
     padding: 20px
 }
 
@@ -98,14 +98,15 @@
 }
 
 .create-game-form .save-publish-btn {
-    background-color: #6A0DAD;
-    color: white;
+    background-color: white;
+    color: #6A0DAD;
     border: none;
     transition: background-color 0.3s;
 }
 
 .create-game-form .save-publish-btn:hover {
-    background-color: #5809a4;
+    background-color: #6A0DAD;
+    color: white;
 }
 
 .create-game-form .save-btn {
