@@ -14,10 +14,11 @@ const ProductHero = ({
     isFavorite
 }) => {
     const { user } = useUser();
+    const gameImage = `${process.env.PUBLIC_URL}/gameImages/${game.imageUrl}`;
 
     return (
         <div className="product-hero">
-            <img className="product-hero-image" src={game.image} alt={game.name} />
+            <img className="product-hero-image" src={gameImage} alt={game.name} />
             <div className="product-hero-content">
                 <h1 className="product-title">{game.name}</h1>
                 <p className="product-description">{game.description}</p>

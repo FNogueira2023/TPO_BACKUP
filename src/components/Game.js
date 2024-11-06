@@ -23,8 +23,9 @@ const GameChart = ({
   const date = new Date(dateStr);
   const formattedDate = isNaN(date.getTime()) ? 'Invalid date' : date.toISOString().split('T')[0];
   const navigate = useNavigate();
+  const gameImage = `${process.env.PUBLIC_URL}/gameImages/${game.imageUrl}`;
 
-
+  console.log(gameImage)
   const handleImageClick = () => {
     navigate(`/product/${game.id}`);
   };
@@ -89,7 +90,7 @@ const GameChart = ({
 
       <div className="image-container">
         <img
-          src={game.image}
+          src={gameImage}
           alt={game.name}
           className="game-image"
           onClick={handleImageClick}

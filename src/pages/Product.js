@@ -173,9 +173,8 @@ const Product = () => {
                 await fetchWishlistItems();
             }
         } catch (error) {
-            console.log(game.id);
-            console.log(error);
-            setError('Failed to add item to wishlist.');
+            console.error('Error adding to cart:', error);
+            alert('You must be logged in to add items to your wishlist!');
         }
     };
 

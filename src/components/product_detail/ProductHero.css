@@ -1,5 +1,5 @@
 .product-hero {
-    height: 75vh;
+    height: 90vh;
     background-color: #313031;
     display: flex;
     align-items: center;
@@ -10,12 +10,6 @@
 
 .product-hero-content {
     max-width: 50%;
-}
-
-.release-info {
-    font-size: 1rem;
-    color: #888;
-    margin-bottom: 0.5rem;
 }
 
 .product-title {
@@ -74,10 +68,8 @@
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-
-
 .product-hero-image {
-    max-width: 100%;
+    max-width: 60%; /* Reduced from 100% to 60% */
     height: auto;
     border-radius: 10px;
     object-fit: cover;
