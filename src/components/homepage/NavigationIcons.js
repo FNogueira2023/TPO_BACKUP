@@ -22,7 +22,7 @@ const NavigationIcons = () => {
       { name: 'My sales', path: '/profile', icon: purchasesIcon },      
     ] : []), 
 
-    ...(user?.user.userType !== 'company' ? [
+    ...(user?.user.userType === 'customer' ? [
       { name: 'Wishlist', path: '/profile', icon: wishlistIcon },
       { name: 'Cart', path: '/cart', icon: cartIcon },
       { name: 'Purchases', path: '/profile', icon: purchasesIcon },

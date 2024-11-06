@@ -11,6 +11,7 @@ import { UserProvider } from './userContext';
 import UserProfile from './pages/UserProfile';
 import Footer from './components/Footer';
 import Cart from './pages/Cart';
+import Product from './pages/Product';
 
 function App() {
 
@@ -41,6 +42,7 @@ function App() {
             <Route path="/catalog" element={<Catalog />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/profile" element={<UserProfile />} />
+            <Route path="/product/:gameId" element={<Product />} />
             <Route path="*" element={<Navigate to="/" />} /> {/* Redirección */}
           </Routes>
         </div>

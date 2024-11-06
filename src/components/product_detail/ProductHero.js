@@ -1,32 +1,50 @@
 import React from 'react';
 import './ProductHero.css';
-import image from '../../images/games/turismo.jpg'
+import { BsCart4 } from "react-icons/bs";
+import { AiOutlineHeart, AiFillHeart } from "react-icons/ai";
+import { useUser } from '../../userContext';
 
-const ProductHero = () => {
-    const game = {
-        image: image,
-        releaseInfo: "2024-10-01",
-        title: "Gran Turismo 7",
-        description: "Gran Turismo 7 is a racing simulation video game developed. The game is the eighth main installment and the thirteenth overall in the Gran Turismo series. It was released for the PlayStation 4 and PlayStation",
-        price: 10.00
-    };
-    
+const ProductHero = ({
+    game,
+    onAddToCart,
+    onRemoveFromCart,
+    onAddToWishlist,
+    onRemoveFromWishlist,
+    isInCart,
+    isFavorite
+}) => {
+    const { user } = useUser();
+
     return (
         <div className="product-hero">
-            <img className="product-hero-image" src={game.image} alt={game.title} />
+            <img className="product-hero-image" src={game.image} alt={game.name} />
             <div className="product-hero-content">
-                <p className="release-info">Release year {new Date(game.releaseInfo).getFullYear()}</p>
-                <h1 className="product-title">{game.title}</h1>
+                <h1 className="product-title">{game.name}</h1>
                 <p className="product-description">{game.description}</p>
                 <div className="price-section">
                     <span className="price">${game.price.toFixed(2)}</span>
-                    <div className="hero-buttons">
-                        <button className="btn btn-primary">Add to Cart</button>
-                        <button className="btn btn-secondary">♡ Add to Wish</button>
-                    </div>
+
+                    {/* Conditionally render hero buttons */}
+                    {user?.user?.userType !== 'company' && (
+                        <div className="hero-buttons">
+                            <button
+                                className="btn btn-primary"
+                                onClick={() => isInCart ? onRemoveFromCart(game) : onAddToCart(game)}
+                            >
+                                {isInCart ? "Remove" : "Add"} <BsCart4 className="icon-right" />
+                            </button>
+
+                            <button
+                                className="btn btn-primary"
+                                onClick={() => isFavorite ? onRemoveFromWishlist(game) : onAddToWishlist(game)}
+                                aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                            >
+                                {isFavorite ? <AiFillHeart /> : <AiOutlineHeart />}
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
-            
         </div>
     );
 };

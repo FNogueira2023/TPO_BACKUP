@@ -4,6 +4,7 @@ import { BsCart4 } from "react-icons/bs";
 import { AiFillStar, AiOutlineHeart, AiFillHeart } from "react-icons/ai";
 import { FiSettings } from "react-icons/fi";
 import { useUser } from '../userContext';
+import { useNavigate } from 'react-router-dom';
 import './Game.css';
 
 const GameChart = ({
@@ -17,15 +18,22 @@ const GameChart = ({
   onAddToWishlist,
   onRemoveFromWishlist,
 }) => {
-  const { user } = useUser(); 
+  const { user } = useUser();
   const dateStr = game.createdAt;
   const date = new Date(dateStr);
   const formattedDate = isNaN(date.getTime()) ? 'Invalid date' : date.toISOString().split('T')[0];
+  const navigate = useNavigate();
+
+
+  // const handleImageClick = () => {
+  //   navigate(`http://127.0.0.1:3001/product/${game.id}`);
+  // };
+
 
   const renderButtons = () => {
     if (variant === 'catalog') {
-      return (        
-        user.user.userType != 'company' && (
+      return (
+        user?.user.userType != 'company' && (
           <button
             className="button"
             onClick={() => isInCart ? onRemoveFromCart(game) : onAddToCart(game)}

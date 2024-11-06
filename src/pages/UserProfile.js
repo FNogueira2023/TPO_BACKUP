@@ -118,7 +118,7 @@ const UserProfile = () => {
         setLoading(true);
         const token = user.token;
 
-        try {            
+        try {
             // Fetch user orders or company games based on user type
             if (user.user.userType === 'customer') {
                 const ordersResponse = await axios.get('http://127.0.0.1:3001/orders', {
@@ -143,14 +143,13 @@ const UserProfile = () => {
 
     useEffect(() => {
         fetchGames();
-        fetchProfile();
-        fetchWishlistItems();   
-        fetchOrdersAndCompanyGames();
-    }, []);
-
-    useEffect(() => {
-        fetchCart();
-        fetchCartItems();      
+        if (user) {
+            fetchProfile();
+            fetchWishlistItems();
+            fetchOrdersAndCompanyGames();
+            fetchCart();
+            fetchCartItems();
+        }
     }, []);
 
     const addToCart = async (game) => {
