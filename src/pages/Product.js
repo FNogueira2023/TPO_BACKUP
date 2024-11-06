@@ -56,8 +56,8 @@ const Product = () => {
         }
     };
 
-      // Function to fetch cart items
-      const fetchCartItems = async () => {
+    // Function to fetch cart items
+    const fetchCartItems = async () => {
         if (!user) {
             return;
         }
@@ -82,19 +82,19 @@ const Product = () => {
         }
     };
 
-    // Function to fetch wishlist items
+    // Function to fetch wishlist items 
     const fetchWishlistItems = async () => {
-        if (!user) return;
+        setWishlistItems([])
         try {
             const response = await axios.get(`http://127.0.0.1:3001/wishlists/items/all`, {
                 headers: { Authorization: `Bearer ${user.token}` },
             });
             setWishlistItems(response.data);
         } catch (error) {
-            setError('Error fetching wishlist items.');
-            console.error('Error fetching wishlist items:', error);
+            console.error("Error fetching wishlist items:", error);
         }
-    };
+    }
+
 
     // Helper function to check if a game is in the cart
     const isGameInCart = (gameId) => cartItems.some(item => item.gameId === gameId);
@@ -102,7 +102,7 @@ const Product = () => {
     // Helper function to check if a game is in the wishlist
     const isInWishlist = (gameId) => wishlistItems.some(item => item.gameId === gameId);
 
-    
+
 
     const addToCart = async (game) => {
         try {
@@ -161,34 +161,43 @@ const Product = () => {
 
     const addToWishlist = async (game) => {
         try {
-            const response = await axios.post(`http://127.0.0.1:3001/wishlists/items`, { gameId: game.id }, {
-                headers: { 'Authorization': `Bearer ${user.token}` },
+            const response = await axios.post(`http://127.0.0.1:3001/wishlists/items`, {
+                gameId: game.id,
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${user.token}`,
+                },
             });
 
             if (response.status === 201) {
-                fetchWishlistItems(); // Refresh wishlist
+                await fetchWishlistItems();
             }
         } catch (error) {
-            console.error('Error adding to cart:', error);
-            alert('You must be logged in to add items to your wishlist!');
+            console.log(game.id);
+            console.log(error);
+            setError('Failed to add item to wishlist.');
         }
     };
 
     const removeFromWishlist = async (game) => {
         try {
             const response = await axios.delete(`http://127.0.0.1:3001/wishlists/items/${game.id}`, {
-                headers: { 'Authorization': `Bearer ${user.token}` },
+                headers: {
+                    'Authorization': `Bearer ${user.token}`,
+                },
+                data: {
+                    gameId: game.id,
+                },
             });
 
             if (response.status === 204) {
-                fetchWishlistItems(); // Refresh wishlist
+                await fetchWishlistItems();
             }
         } catch (error) {
-            setError('Error removing item from wishlist.');
             console.error('Error removing from wishlist:', error);
+            setError('Failed to remove item from wishlist.');
         }
     };
-
     // UseEffect hook to fetch the game and other data when the component mounts or gameId changes
     useEffect(() => {
         setLoading(true);
@@ -198,7 +207,7 @@ const Product = () => {
             fetchCartItems();
             fetchWishlistItems();
         }
-    }, [gameId, user]); // Fetch data when gameId or user changes
+    }, []);
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;

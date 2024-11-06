@@ -25,9 +25,9 @@ const GameChart = ({
   const navigate = useNavigate();
 
 
-  // const handleImageClick = () => {
-  //   navigate(`http://127.0.0.1:3001/product/${game.id}`);
-  // };
+  const handleImageClick = () => {
+    navigate(`/product/${game.id}`);
+  };
 
 
   const renderButtons = () => {
@@ -92,6 +92,7 @@ const GameChart = ({
           src={game.image}
           alt={game.name}
           className="game-image"
+          onClick={handleImageClick}
         />
       </div>
 
