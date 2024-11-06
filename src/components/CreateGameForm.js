@@ -1,19 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './createGameForm.css';
 
-
-const CreateGameForm = ({onClose}) => {
+const CreateGameForm = ({ onClose }) => {
     const [gameData, setGameData] = useState({
         name: '',
         category: '',
         players: '',
         language: '',
         operatingSystem: '',
+        price: '',
         description: '',
         minRequirements: '',
         recommendations: '',
-        image: null,
+        imageURL: null,
     });
+
+    // Update imageURL based on the name
+    useEffect(() => {
+        if (gameData.name) {
+            setGameData((prevData) => ({
+                ...prevData,
+                imageURL: `${gameData.name}.png`,
+            }));
+        }
+    }, [gameData.name]); // This will run whenever the name changes
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -43,8 +53,8 @@ const CreateGameForm = ({onClose}) => {
             <div className="overlay"></div>
             <div className="create-game-form-container">
                 <div className="create-game-form">
-                <button className="close-btn" onClick={onClose}>X</button>
-                    <h2>Product Details</h2>                    
+                    <button className="close-btn" onClick={onClose}>X</button>
+                    <h2>Product Details</h2>
                     <div className="form-section">
                         <div>
                             <input
@@ -63,7 +73,6 @@ const CreateGameForm = ({onClose}) => {
                                 <option value="action">Action</option>
                                 <option value="adventure">Adventure</option>
                                 <option value="puzzle">Puzzle</option>
-
                             </select>
                             <select
                                 name="players"
@@ -82,8 +91,7 @@ const CreateGameForm = ({onClose}) => {
                                 <option value="">Language</option>
                                 <option value="english">English</option>
                                 <option value="spanish">Spanish</option>
-                                <option value="spanish">German</option>
-
+                                <option value="german">German</option>
                             </select>
                             <select
                                 name="operatingSystem"
@@ -95,6 +103,7 @@ const CreateGameForm = ({onClose}) => {
                                 <option value="mac">MacOS</option>
                                 <option value="linux">Linux</option>
                             </select>
+
                             <textarea
                                 name="description"
                                 placeholder="Game description"
@@ -103,6 +112,13 @@ const CreateGameForm = ({onClose}) => {
                             ></textarea>
                         </div>
                         <div>
+                            <input
+                                type="number"
+                                name="price"
+                                placeholder="Price"
+                                value={gameData.price}
+                                onChange={handleChange}
+                            />
                             <textarea
                                 name="minRequirements"
                                 placeholder="Minimum requirements"
@@ -123,15 +139,12 @@ const CreateGameForm = ({onClose}) => {
                     </div>
                     <div className="button-container">
                         <button onClick={handleSaveAndPublish} className="save-publish-btn">
-                           Publish
+                            Publish
                         </button>
-                       
-                        
                     </div>
                 </div>
             </div>
         </div>
-
     );
 };
 
