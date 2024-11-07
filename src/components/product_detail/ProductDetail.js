@@ -2,7 +2,7 @@ import React from 'react';
 import './ProductDetail.css';
  import image from '../../images/polyphony.png'
 
-const ProductDetail = () => {
+const ProductDetail = ({game}) => {
   const detail = {
     image: image,
     company: "Polyphony Digital Inc.",
@@ -28,11 +28,11 @@ const ProductDetail = () => {
       <div className="product-info">
         <img src={detail.image} alt="Company Logo" className="company-logo" />
         <div className="company-info">
-          <h2>{detail.company}</h2>
-          <p><strong>Product description:</strong> {detail.productDescription}</p>
-          <p><strong>Mode:</strong> {detail.mode}</p>
-          <p><strong>Language:</strong> {detail.language}</p>
-          <p><strong>System:</strong> {detail.system}</p>
+          {/* <h2>{detail.company}</h2> */}
+          <p><strong>Product description:</strong> {game.description}</p>
+          <p><strong>Mode:</strong> {game.playerMode}</p>
+          <p><strong>Language:</strong> {game.language}</p>
+          <p><strong>System:</strong> {game.os}</p>
         </div>
       </div>
       <div className="specs">

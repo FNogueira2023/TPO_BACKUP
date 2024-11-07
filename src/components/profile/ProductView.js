@@ -63,11 +63,6 @@ const ProductView = ({
     return ordersGames.includes(gameId);
   };
 
-  // Helper function to check if a game is in companyGames
-  const isInGameCompany = (gameId) => {
-    return companyGames.includes(gameId);
-  };
-
   // Function to handle adding a new product (open modal)
   const onAddProduct = () => {
     setIsModalOpen(true);
@@ -115,7 +110,7 @@ const ProductView = ({
 
       {isModalOpen && <CreateGameForm onClose={closeModal} />}
 
-      {/* <div className="highlights__products_view">
+      <div className="highlights__products_view">
         {profile.userType === 'customer' && (
           games
             .filter(game => isInGameOrders(game.id))
@@ -127,10 +122,8 @@ const ProductView = ({
               />
             ))
         )}
-        {profile.userType === 'company' && (
-          games
-            .filter(game => isInGameCompany(game.id))
-            .map((game, index) => (
+        {profile.userType === 'company' && (         
+            companyGames.map((game, index) => (
               <GameChart
                 key={index}
                 game={game}
@@ -138,7 +131,7 @@ const ProductView = ({
               />
             ))
         )}
-      </div> */}
+      </div>
     </div>
   );
 };

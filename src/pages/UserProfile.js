@@ -16,6 +16,7 @@ const UserProfile = () => {
     const [profile, setProfile] = useState([]);
     const [ordersGames, setOrdersGames] = useState([]);
     const [companyGames, setCompanyGames] = useState([]);
+    const [companyId, setCompanyId] = useState(null);
 
     // Function to fetch profile data
     const fetchProfile = async () => {
@@ -62,6 +63,20 @@ const UserProfile = () => {
             console.error(err); // Log the error for debugging
         } finally {
             setLoading(false);
+        }
+    };
+
+    // Function to fetch the company data by userId using axios
+    const handleSearchCompany = async () => {
+        try {
+            const response = await axios.get(`http://127.0.0.1:3001/companies/profile/${user.user.id}`, {
+                headers: {
+                    Authorization: `Bearer ${user.token}`, // Add the token to the request header
+                }
+            });
+            setCompanyId(response.data.id)
+        } catch (err) {
+            console.log(err);
         }
     };
 
@@ -128,7 +143,9 @@ const UserProfile = () => {
             } else {
                 const companyGamesResponse = await axios.get('http://127.0.0.1:3001/companies/games', {
                     headers: { Authorization: `Bearer ${token}` },
+                    params: { companyId: companyId },
                 });
+        
                 setCompanyGames(companyGamesResponse.data);
             }
 
@@ -142,17 +159,38 @@ const UserProfile = () => {
 
 
     useEffect(() => {
-        fetchGames();
-        if (user) {
-            fetchProfile();
-            // fetchOrdersAndCompanyGames();
-            if (user.user.userType === 'customer'){
-                fetchWishlistItems();
-                fetchCart();
-                fetchCartItems();
-            }          
-        }
-    }, []);
+        const fetchData = async () => {
+            if (user) {
+                setLoading(true);
+
+                // Step 1: Fetch profile data
+                await fetchProfile();
+
+                // Step 2: If the user is a company, fetch the company data
+                if (user.user.userType === 'company') {
+                    await handleSearchCompany();  // Ensure the companyId is set before proceeding
+                }
+
+                // Step 3: Fetch user-specific data
+                if (user.user.userType === 'customer') {
+                    fetchWishlistItems();
+                    fetchCart();
+                    fetchCartItems();
+                }
+
+                // Step 4: Fetch orders or company games only after `companyId` is set (for companies)
+                if (user.user.userType === 'customer' || companyId) {
+                    // fetchOrdersAndCompanyGames();
+                }
+
+                setLoading(false);              
+            }
+        };
+
+        fetchData();  // Call the async function
+
+    }, [user, companyId]);
+
 
     const addToCart = async (game) => {
         try {
@@ -215,8 +253,9 @@ const UserProfile = () => {
         return cartItems.some(item => item.gameId === gameId);
     };
 
-    const isInWishlist = (gameId) => {
-        return wishlistItems.some(item => item.gameId === gameId);
+    console.log(wishlistItems)
+    const isInWishlist = (id) => {
+        return wishlistItems.some(item => item.gameId === id);
     };
 
     return (
@@ -226,9 +265,9 @@ const UserProfile = () => {
             {!loading && !error && ( // Only render profile if there's no loading or error
                 <>
                     <UserCover profile={profile} />
-                    <ProductView profile={profile} ordersGames={ordersGames} games={games} companyGames={companyGames} />
-                    <Wishlist wishlistItems={wishlistItems} games={games} isInWishlist={isInWishlist}
-                        isGameInCart={isGameInCart} addToCart={addToCart} removeFromCart={removeFromCart} cartItems={cartItems} />
+                    {/* <ProductView profile={profile} ordersGames={ordersGames} games={games} companyGames={companyGames} /> */}
+                    <Wishlist wishlistItems={wishlistItems} games={games}
+                        isGameInCart={isGameInCart} addToCart={addToCart} removeFromCart={removeFromCart} cartItems={cartItems} isInWishlist={isInWishlist}/>
                 </>
             )}
         </div>

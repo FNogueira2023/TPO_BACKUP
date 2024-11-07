@@ -14,7 +14,7 @@ const ProductHero = ({
     isFavorite
 }) => {
     const { user } = useUser();
-    const gameImage = `${process.env.PUBLIC_URL}/gameImages/${game.imageUrl}`;
+    const gameImage = `http://127.0.0.1:3001/gameImages/${game.imageURL}`;
 
     return (
         <div className="product-hero">

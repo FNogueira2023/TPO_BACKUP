@@ -51,9 +51,7 @@ const GameChart = ({
       );
     } else if (variant === 'store') {
       return (
-        <button className="button">
-          Publish
-        </button>
+       null
       );
     } else if (variant === 'cart') {
       return (
