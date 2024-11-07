@@ -23,18 +23,18 @@ const GameChart = ({
   const date = new Date(dateStr);
   const formattedDate = isNaN(date.getTime()) ? 'Invalid date' : date.toISOString().split('T')[0];
   const navigate = useNavigate();
-  const gameImage = `${process.env.PUBLIC_URL}/gameImages/${game.imageUrl}`;
 
-  console.log(gameImage)
+  // Construct the correct image URL
+  const gameImage = `http://127.0.0.1:3001/gameImages/${game.imageURL}`;
+
   const handleImageClick = () => {
     navigate(`/product/${game.id}`);
   };
 
-
   const renderButtons = () => {
     if (variant === 'catalog') {
       return (
-        user?.user.userType != 'company' && (
+        user?.user.userType !== 'company' && (
           <button
             className="button"
             onClick={() => isInCart ? onRemoveFromCart(game) : onAddToCart(game)}
@@ -90,7 +90,7 @@ const GameChart = ({
 
       <div className="image-container">
         <img
-          src={gameImage}
+          src={gameImage}  // Dynamically set the image source using the correct image URL
           alt={game.name}
           className="game-image"
           onClick={handleImageClick}

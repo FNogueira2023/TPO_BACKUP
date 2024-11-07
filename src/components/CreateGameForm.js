@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useUser } from '../userContext';
 
 const CreateGameForm = ({ onClose }) => {
-    const {user} = useUser();
+    const { user } = useUser();
     const [gameData, setGameData] = useState({
         name: '',
         genre: '',
@@ -15,20 +15,9 @@ const CreateGameForm = ({ onClose }) => {
         description: '',
         minRequirements: '',
         recommendations: '',
-        // imageURL: null,
+        imageURL: null,
         companyId: '',
     });
-
-    // Update imageURL based on the name
-    // useEffect(() => {
-    //     if (gameData.name) {
-    //         setGameData((prevData) => ({
-    //             ...prevData,
-    //             imageURL: `${gameData.name}.png`,
-    //         }));
-    //     }
-    // }, [gameData.name]); // This will run whenever the name changes
-
 
     // Function to fetch the company data by userId using axios
     const handleSearchCompany = async () => {
@@ -46,9 +35,8 @@ const CreateGameForm = ({ onClose }) => {
             console.log(err);
         }
     };
-    
 
-    useEffect(() => {handleSearchCompany()}, []);
+    useEffect(() => { handleSearchCompany() }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -61,29 +49,41 @@ const CreateGameForm = ({ onClose }) => {
     const handleImageUpload = (e) => {
         setGameData((prevData) => ({
             ...prevData,
-            image: e.target.files[0],
+            image: e.target.files[0], // Store the file in the state
         }));
     };
 
     const handleSaveAndPublish = async () => {
         try {
-            // Make an API call to create a new game using axios
-            const response = await axios.post('http://127.0.0.1:3001/games', gameData, {
-                headers: {
-                    Authorization: `Bearer ${user.token}` // Assuming you have a token for authentication
-                }
-            });
+            const formData = new FormData();
             
+            // Append all game data fields to FormData
+            for (const [key, value] of Object.entries(gameData)) {
+                if (key !== 'image') { // Avoid appending the image object directly
+                    formData.append(key, value);
+                }
+            }
+
+            // Append the image file if it's not null
+            if (gameData.image) {
+                formData.append('image', gameData.image);
+            }
+
+            // Make the API call to create the new game
+            const response = await axios.post('http://127.0.0.1:3001/games', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${user.token}`, // Assuming you have a token for authentication
+                },
+            });
+
             console.log('Game created successfully:', response.data);
-            // Optionally, you can clear the form or perform any success actions
+            // Optionally, clear the form or perform any success actions
             onClose(); // Close the form modal after saving
         } catch (error) {
-            console.log(gameData)
             console.error('Error creating game:', error.response?.data?.error || error.message);
         }
     };
-    
-
 
     return (
         <div className="modal">
@@ -116,7 +116,7 @@ const CreateGameForm = ({ onClose }) => {
                                 value={gameData.playerMode}
                                 onChange={handleChange}
                             >
-                                <option value="">PlayerMode</option>
+                                <option value="">Player Mode</option>
                                 <option value="Single-player">Single Player</option>
                                 <option value="Multiplayer">Multiplayer</option>
                             </select>
