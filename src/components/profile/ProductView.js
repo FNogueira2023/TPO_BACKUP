@@ -115,7 +115,7 @@ const ProductView = ({
 
       {isModalOpen && <CreateGameForm onClose={closeModal} />}
 
-      <div className="highlights__products_view">
+      {/* <div className="highlights__products_view">
         {profile.userType === 'customer' && (
           games
             .filter(game => isInGameOrders(game.id))
@@ -138,7 +138,7 @@ const ProductView = ({
               />
             ))
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

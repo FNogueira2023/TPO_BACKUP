@@ -1,29 +1,54 @@
 import React, { useState, useEffect } from 'react';
 import './createGameForm.css';
+import axios from 'axios';
+import { useUser } from '../userContext';
 
 const CreateGameForm = ({ onClose }) => {
+    const {user} = useUser();
     const [gameData, setGameData] = useState({
         name: '',
-        category: '',
-        players: '',
+        genre: '',
+        playerMode: '',
         language: '',
-        operatingSystem: '',
+        os: '',
         price: '',
         description: '',
         minRequirements: '',
         recommendations: '',
-        imageURL: null,
+        // imageURL: null,
+        companyId: '',
     });
 
     // Update imageURL based on the name
-    useEffect(() => {
-        if (gameData.name) {
+    // useEffect(() => {
+    //     if (gameData.name) {
+    //         setGameData((prevData) => ({
+    //             ...prevData,
+    //             imageURL: `${gameData.name}.png`,
+    //         }));
+    //     }
+    // }, [gameData.name]); // This will run whenever the name changes
+
+
+    // Function to fetch the company data by userId using axios
+    const handleSearchCompany = async () => {
+        try {
+            const response = await axios.get(`http://127.0.0.1:3001/companies/profile/${user.user.id}`, {
+                headers: {
+                    Authorization: `Bearer ${user.token}`, // Add the token to the request header
+                }
+            });
             setGameData((prevData) => ({
                 ...prevData,
-                imageURL: `${gameData.name}.png`,
+                companyId: response.data.id
             }));
+        } catch (err) {
+            console.log(err);
         }
-    }, [gameData.name]); // This will run whenever the name changes
+    };
+    
+
+    useEffect(() => {handleSearchCompany()}, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -40,13 +65,25 @@ const CreateGameForm = ({ onClose }) => {
         }));
     };
 
-    const handleSaveAndPublish = () => {
-        console.log('Save and Publish:', gameData);
+    const handleSaveAndPublish = async () => {
+        try {
+            // Make an API call to create a new game using axios
+            const response = await axios.post('http://127.0.0.1:3001/games', gameData, {
+                headers: {
+                    Authorization: `Bearer ${user.token}` // Assuming you have a token for authentication
+                }
+            });
+            
+            console.log('Game created successfully:', response.data);
+            // Optionally, you can clear the form or perform any success actions
+            onClose(); // Close the form modal after saving
+        } catch (error) {
+            console.log(gameData)
+            console.error('Error creating game:', error.response?.data?.error || error.message);
+        }
     };
+    
 
-    const handleSave = () => {
-        console.log('Save as Draft:', gameData);
-    };
 
     return (
         <div className="modal">
@@ -65,23 +102,23 @@ const CreateGameForm = ({ onClose }) => {
                                 onChange={handleChange}
                             />
                             <select
-                                name="category"
-                                value={gameData.category}
+                                name="genre"
+                                value={gameData.genre}
                                 onChange={handleChange}
                             >
-                                <option value="">Category</option>
+                                <option value="">Genre</option>
                                 <option value="action">Action</option>
                                 <option value="adventure">Adventure</option>
                                 <option value="puzzle">Puzzle</option>
                             </select>
                             <select
-                                name="players"
-                                value={gameData.players}
+                                name="playerMode"
+                                value={gameData.playerMode}
                                 onChange={handleChange}
                             >
-                                <option value="">Players</option>
-                                <option value="single">Single Player</option>
-                                <option value="multiplayer">Multiplayer</option>
+                                <option value="">PlayerMode</option>
+                                <option value="Single-player">Single Player</option>
+                                <option value="Multiplayer">Multiplayer</option>
                             </select>
                             <select
                                 name="language"
@@ -94,8 +131,8 @@ const CreateGameForm = ({ onClose }) => {
                                 <option value="german">German</option>
                             </select>
                             <select
-                                name="operatingSystem"
-                                value={gameData.operatingSystem}
+                                name="os"
+                                value={gameData.os}
                                 onChange={handleChange}
                             >
                                 <option value="">Operative System</option>

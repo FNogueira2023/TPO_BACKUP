@@ -145,10 +145,12 @@ const UserProfile = () => {
         fetchGames();
         if (user) {
             fetchProfile();
-            fetchWishlistItems();
-            fetchOrdersAndCompanyGames();
-            fetchCart();
-            fetchCartItems();
+            // fetchOrdersAndCompanyGames();
+            if (user.user.userType === 'customer'){
+                fetchWishlistItems();
+                fetchCart();
+                fetchCartItems();
+            }          
         }
     }, []);
 
