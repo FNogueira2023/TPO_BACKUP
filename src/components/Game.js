@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaWindows, FaApple, FaLinux } from "react-icons/fa";
 import { BsCart4 } from "react-icons/bs";
 import { AiFillStar, AiOutlineHeart, AiFillHeart } from "react-icons/ai";
@@ -18,17 +18,26 @@ const GameChart = ({
   onAddToWishlist,
   onRemoveFromWishlist,
 }) => {
+  const [imageError, setImageError] = useState(false);
   const { user } = useUser();
-  const dateStr = game.createdAt;
+  const dateStr = game?.createdAt;
   const date = new Date(dateStr);
   const formattedDate = isNaN(date.getTime()) ? 'Invalid date' : date.toISOString().split('T')[0];
   const navigate = useNavigate();
 
-  // Construct the correct image URL
-  const gameImage = `http://127.0.0.1:3001/gameImages/${game.imageURL}`;
+  // Construct the correct image URL with a fallback for missing `game` or `game.imageURL`
+  const gameImage = game && game.imageURL
+    ? `http://127.0.0.1:3001/gameImages/${game.imageURL}`
+    : 'http://127.0.0.1:3001/defaultImage.jpg'; // Fallback/default image URL
 
   const handleImageClick = () => {
-    navigate(`/product/${game.id}`);
+    if (game?.id) {
+      navigate(`/product/${game.id}`);
+    }
+  };
+
+  const handleImageError = () => {
+    setImageError(true); // If there's an error, set imageError to true
   };
 
   const renderButtons = () => {
@@ -38,6 +47,7 @@ const GameChart = ({
           <button
             className="button"
             onClick={() => isInCart ? onRemoveFromCart(game) : onAddToCart(game)}
+            disabled={!game} // Disable button if no `game` data is provided
           >
             {isInCart ? "Remove" : "Add"} <BsCart4 className="icon-right" />
           </button>
@@ -50,15 +60,14 @@ const GameChart = ({
         </button>
       );
     } else if (variant === 'store') {
-      return (
-       null
-      );
+      return null;
     } else if (variant === 'cart') {
       return (
         <div className="button-group">
           <button
             className="button"
             onClick={() => onRemoveFromCart(game)}
+            disabled={!game}
           >
             Remove <BsCart4 className="icon-right" />
           </button>
@@ -87,38 +96,40 @@ const GameChart = ({
       )}
 
       <div className="image-container">
-        <img
-          src={gameImage}  // Dynamically set the image source using the correct image URL
-          alt={game.name}
-          className="game-image"
-          onClick={handleImageClick}
-        />
+      <img
+    src={imageError ? 'http://127.0.0.1:3001/defaultImage.jpg' : gameImage} // Fallback to default image if there's an error
+    alt={game?.name || 'Game'}  // Provide alt text for accessibility
+    className="game-image"
+    onClick={handleImageClick}
+    onError={handleImageError} // Set error handler on image load
+  />
+
       </div>
 
       <div className="details-container">
-        <h2 className="game-title">{game.name}</h2>
+        <h2 className="game-title">{game?.name || 'Unknown Game'}</h2>
         <p className="release-info">
-          {formattedDate} / {game.developer?.name}
+          {formattedDate}
         </p>
 
         <div className="rating-container">
           <div className="stars-container">
-            {Array.from({ length: game.rating }, (_, index) => (
+            {Array.from({ length: game?.rating || 0 }, (_, index) => (
               <span key={index} className="star">⭐</span>
             ))}
           </div>
           <div className="price-container">
             <span className="price">
-              {game.price === 0 ? "Free" : `$${game.price}`}
+              {game?.price === 0 ? "Free" : `$${game?.price || 'N/A'}`}
             </span>
           </div>
         </div>
 
         <div className="platforms-container">
           <div className="platform-icons">
-            {game.os.isApple && <FaApple className="platform-icon" />}
-            {game.os.isMicrosoft && <FaWindows className="platform-icon" />}
-            {game.os.isLinux && <FaLinux className="platform-icon" />}
+            {game?.os?.isApple && <FaApple className="platform-icon" />}
+            {game?.os?.isMicrosoft && <FaWindows className="platform-icon" />}
+            {game?.os?.isLinux && <FaLinux className="platform-icon" />}
           </div>
           {renderButtons()}
         </div>

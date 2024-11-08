@@ -136,9 +136,11 @@ const UserProfile = () => {
         try {
             // Fetch user orders or company games based on user type
             if (user.user.userType === 'customer') {
-                const ordersResponse = await axios.get('http://127.0.0.1:3001/orders', {
+                const ordersResponse = await axios.get('http://127.0.0.1:3001/orders/all', {
                     headers: { Authorization: `Bearer ${token}` }
-                });
+                });       
+                   
+                console.log(ordersResponse.data)
                 setOrdersGames(ordersResponse.data);
             } else {
                 const companyGamesResponse = await axios.get('http://127.0.0.1:3001/companies/games', {
@@ -160,6 +162,8 @@ const UserProfile = () => {
 
     useEffect(() => {
         const fetchData = async () => {
+            fetchGames();
+            
             if (user) {
                 setLoading(true);
 
@@ -180,15 +184,15 @@ const UserProfile = () => {
 
                 // Step 4: Fetch orders or company games only after `companyId` is set (for companies)
                 if (user.user.userType === 'customer' || companyId) {
-                    // fetchOrdersAndCompanyGames();
+                    fetchOrdersAndCompanyGames();
+                    // console.log(ordersGames)
                 }
 
                 setLoading(false);              
             }
         };
 
-        fetchData();  // Call the async function
-
+        fetchData(); 
     }, [user, companyId]);
 
 
@@ -211,8 +215,7 @@ const UserProfile = () => {
                 await fetchCart();
                 alert(`${game.name} has been added to your cart!`);
             } else {
-                const errorData = await response.json();
-                alert(`Error adding to cart: ${errorData.error}`);
+                const errorData = await response.json();               
             }
         } catch (error) {
             console.error('Error adding to cart:', error);
@@ -235,8 +238,7 @@ const UserProfile = () => {
 
             if (response.ok) {
                 fetchCartItems();
-                await fetchCart();
-                alert(`${game.name} has been removed from your cart.`);
+                await fetchCart();        
             } else {
                 const errorData = await response.json();
                 alert(`Error removing from cart: ${errorData.error}`);
@@ -253,7 +255,6 @@ const UserProfile = () => {
         return cartItems.some(item => item.gameId === gameId);
     };
 
-    console.log(wishlistItems)
     const isInWishlist = (id) => {
         return wishlistItems.some(item => item.gameId === id);
     };
@@ -265,7 +266,7 @@ const UserProfile = () => {
             {!loading && !error && ( // Only render profile if there's no loading or error
                 <>
                     <UserCover profile={profile} />
-                    {/* <ProductView profile={profile} ordersGames={ordersGames} games={games} companyGames={companyGames} /> */}
+                    <ProductView profile={profile} ordersGames={ordersGames} games={games} companyGames={companyGames} />
                     <Wishlist wishlistItems={wishlistItems} games={games}
                         isGameInCart={isGameInCart} addToCart={addToCart} removeFromCart={removeFromCart} cartItems={cartItems} isInWishlist={isInWishlist}/>
                 </>

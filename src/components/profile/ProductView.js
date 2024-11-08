@@ -59,9 +59,13 @@ const ProductView = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Helper function to check if a game is in orderGames
-  const isInGameOrders = (gameId) => {
-    return ordersGames.includes(gameId);
+
+ 
+  const isInGameOrders = (id) => {
+    return ordersGames.some(item => item.gameId === id);
   };
+
+  const gamesInOrders = games.filter(game => isInGameOrders(game.id));
 
   // Function to handle adding a new product (open modal)
   const onAddProduct = () => {
@@ -112,8 +116,7 @@ const ProductView = ({
 
       <div className="highlights__products_view">
         {profile.userType === 'customer' && (
-          games
-            .filter(game => isInGameOrders(game.id))
+          gamesInOrders
             .map((game, index) => (
               <GameChart
                 key={index}

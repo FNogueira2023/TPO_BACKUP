@@ -31,8 +31,7 @@ const Wishlist = ({
                 <GameCardSm
                   game={game}
                   key={game.id}
-                  title={game.title}
-                  image={game.image}
+                  title={game.name}            
                   price={game.price}
                   rating={game.rating}
                   onAddToCart={addToCart}
