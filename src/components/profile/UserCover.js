@@ -1,14 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './UserCover.css';
-
+import UpdateUserForm from './UpdateUserForm'; // Adjust the path if needed
 import image from '../../images/default_user.jpg';
 
-const UserCover = ({ profile }) => {
+const UserCover = ({ profile}) => {
   const [imageUrl, setImageUrl] = useState(image);
-  const [detail, setDetail] = useState({
-    user: "Loading...",
-    userDescription: "",
-  });
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const birthDate = profile.birthDate ? new Date(profile.birthDate).toISOString().split('T')[0] : 'Date not available';
 
@@ -23,6 +20,10 @@ const UserCover = ({ profile }) => {
     }
   };
 
+
+  const toggleModal = () => {
+    setIsModalOpen((prev) => !prev);
+  };
 
   return (
     <div className="cover-container">
@@ -63,7 +64,12 @@ const UserCover = ({ profile }) => {
         ) : profile.userType === 'company' ? (
           <p className="description">{profile.bio}</p>
         ) : null}
+        <button onClick={toggleModal} className="edit-profile-button">
+          Edit Profile
+        </button>
       </div>
+
+      {isModalOpen && <UpdateUserForm onClose={toggleModal}/>}
     </div>
   );
 };

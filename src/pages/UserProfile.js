@@ -196,6 +196,7 @@ const UserProfile = () => {
     }, [user, companyId]);
 
 
+
     const addToCart = async (game) => {
         try {
             const response = await fetch('http://127.0.0.1:3001/carts/items', {
@@ -265,7 +266,7 @@ const UserProfile = () => {
             {error && <div className="error-message">{error}</div>} {/* Display error message */}
             {!loading && !error && ( // Only render profile if there's no loading or error
                 <>
-                    <UserCover profile={profile} />
+                    <UserCover profile={profile}/>
                     <ProductView profile={profile} ordersGames={ordersGames} games={games} companyGames={companyGames} />
                     <Wishlist wishlistItems={wishlistItems} games={games}
                         isGameInCart={isGameInCart} addToCart={addToCart} removeFromCart={removeFromCart} cartItems={cartItems} isInWishlist={isInWishlist}/>
