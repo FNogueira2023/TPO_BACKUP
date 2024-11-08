@@ -3,7 +3,7 @@ import './UserCover.css';
 import UpdateUserForm from './UpdateUserForm'; // Adjust the path if needed
 import image from '../../images/default_user.jpg';
 
-const UserCover = ({ profile}) => {
+const UserCover = ({ profile, fetchProfile}) => {
   const [imageUrl, setImageUrl] = useState(image);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -19,7 +19,7 @@ const UserCover = ({ profile}) => {
       reader.readAsDataURL(file);
     }
   };
-
+  
 
   const toggleModal = () => {
     setIsModalOpen((prev) => !prev);
@@ -62,14 +62,14 @@ const UserCover = ({ profile}) => {
             <p className="description">Email: {profile.email}</p>
           </>
         ) : profile.userType === 'company' ? (
-          <p className="description">{profile.bio}</p>
+          <p className="description">About the company: {profile.bio}</p>          
         ) : null}
         <button onClick={toggleModal} className="edit-profile-button">
           Edit Profile
         </button>
       </div>
 
-      {isModalOpen && <UpdateUserForm onClose={toggleModal}/>}
+      {isModalOpen && <UpdateUserForm onClose={toggleModal} fetchProfile={fetchProfile}/>}
     </div>
   );
 };

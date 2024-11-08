@@ -28,6 +28,7 @@ const UserProfile = () => {
             const userResponse = await axios.get('http://127.0.0.1:3001/profile', {
                 headers: { Authorization: `Bearer ${token}` }
             });
+            console.log(userResponse.data)
             setProfile(userResponse.data);
 
         } catch (err) {
@@ -266,7 +267,7 @@ const UserProfile = () => {
             {error && <div className="error-message">{error}</div>} {/* Display error message */}
             {!loading && !error && ( // Only render profile if there's no loading or error
                 <>
-                    <UserCover profile={profile}/>
+                    <UserCover profile={profile} fetchProfile={fetchProfile}/>
                     <ProductView profile={profile} ordersGames={ordersGames} games={games} companyGames={companyGames} />
                     <Wishlist wishlistItems={wishlistItems} games={games}
                         isGameInCart={isGameInCart} addToCart={addToCart} removeFromCart={removeFromCart} cartItems={cartItems} isInWishlist={isInWishlist}/>

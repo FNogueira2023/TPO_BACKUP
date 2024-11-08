@@ -3,7 +3,7 @@ import axios from 'axios';
 import './UpdateUserForm.css';
 import { useUser } from '../../userContext';
 
-const UpdateUserForm = ({ onClose }) => {
+const UpdateUserForm = ({ onClose, fetchProfile }) => {
   const { user } = useUser();
   // Initialize form state with user data
   const [formData, setFormData] = useState({
@@ -11,9 +11,7 @@ const UpdateUserForm = ({ onClose }) => {
     lastName: user.user.lastName || '',
     email: user.user.email || '',
     bio: user.user.bio || '',
-    avatar: user.user.avatar || '',
   });
-  const [selectedFile, setSelectedFile] = useState(null);
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -26,37 +24,25 @@ const UpdateUserForm = ({ onClose }) => {
     }));
   };
 
-  // Handle file upload
-  const handleFileChange = (e) => {
-    setSelectedFile(e.target.files[0]);
-  };
-
   // Function to update user by making an API call
   const updateUser = async () => {
     setIsSubmitting(true);
-    const formDataToSend = new FormData();
-    
-    // Append all form data to FormData object
-    for (const key in formData) {
-      if (formData[key]) {
-        formDataToSend.append(key, formData[key]);
-      }
-    }
-
-    if (selectedFile) {
-      formDataToSend.append('avatar', selectedFile);
-    }
 
     try {
-      // Sending the PUT request to the backend API
-      const response = await axios.put(`http://127.0.0.1:3001/users/update/${user.id}`, formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${user.token}`
-        },
-      });
+      // Sending the PUT request to the backend API with JSON body
+      const response = await axios.put(
+        `http://127.0.0.1:3001/users/update/${user.user.id}`,
+        formData, // directly send the form data as JSON
+        {
+          headers: {
+            'Authorization': `Bearer ${user.token}`,
+            'Content-Type': 'application/json', // Use JSON instead of multipart/form-data
+          },
+        }
+      );
 
       setMessage(response.data.message || 'User updated successfully!');
+          fetchProfile();
     } catch (error) {
       console.error('Error updating user:', error);
       setMessage('Failed to update user information.');
@@ -65,10 +51,12 @@ const UpdateUserForm = ({ onClose }) => {
     }
   };
 
+
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateUser(); // Call the update function when form is submitted
+    updateUser();
+    // fetchProfile();
   };
 
   useEffect(() => {
@@ -78,7 +66,6 @@ const UpdateUserForm = ({ onClose }) => {
       lastName: user.user.lastName || '',
       email: user.user.email || '',
       bio: user.user.bio || '',
-      avatar: user.user.avatar || '',
     });
   }, [user]);
 
@@ -129,16 +116,6 @@ const UpdateUserForm = ({ onClose }) => {
               onChange={handleChange}
             ></textarea>
           </div>
-          {/* <div>
-            <label htmlFor="avatar">Avatar:</label>
-            <input
-              type="file"
-              id="avatar"
-              name="avatar"
-              accept="image/*"
-              onChange={handleFileChange}
-            />
-          </div> */}
           <button type="submit" disabled={isSubmitting}>
             {isSubmitting ? 'Updating...' : 'Update'}
           </button>
